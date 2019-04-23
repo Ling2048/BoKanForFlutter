@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import './page.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FirstScreen(),
     );
   }
 }
@@ -46,7 +48,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
+  String _title = '';
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -56,7 +58,17 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
       // widget.title = widget.title + (_counter++).toString();
+      _title = widget.title + _counter.toString();
     });
+  }
+
+  void _onPress() async {
+      var url = 'http://user.bookan.com.cn/index.php?op=Resource.categoryIssues&instanceId=1477&libraryType=1&categoryId=42981&pageNum=1&limitNum=50';
+      var response = await http.get(url);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      // print(await http.read('http://example.com/foobar.txt'));
   }
 
   @override
@@ -71,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(_title),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -99,6 +111,20 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '加一' + this._counter.toString(),
               style: Theme.of(context).textTheme.display1,
+            ),
+            ButtonBar(
+              children: <Widget>[
+                IconButton(
+                  icon: new Icon(Icons.menu),
+                  tooltip: '托尔斯泰',
+                  onPressed: _onPress,
+                ),
+                IconButton(
+                  icon: new Icon(Icons.menu),
+                  tooltip: '托尔斯泰',
+                  onPressed: _onPress,
+                )
+              ],
             ),
           ],
         ),
