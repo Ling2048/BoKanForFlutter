@@ -8,13 +8,35 @@ class FirstScreen extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;//获取屏幕尺寸
+    var statusHeight = MediaQuery.of(context).padding.top;//获取状态栏高度
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('First Screen'),
       ),
-      drawer: new Container(
-        width: 300,
-        color: Colors.white,
+      drawer: new Flex(
+        direction: Axis.vertical,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          new Expanded(
+            flex: 1,
+            child: new Container(
+              child: new Text('test'),
+              color: Colors.white,
+              width: size.width * 0.5,
+              padding: EdgeInsets.fromLTRB(0, statusHeight, 0, 0),
+            ),
+          ),
+          // new Expanded(
+          //   flex: 1,
+          //   child: new Container(
+          //     child: new Text('test'),
+          //     color: Colors.white,
+          //   ),
+          // )
+        ],
       ),
       body: new Container(
         width: 100000,
