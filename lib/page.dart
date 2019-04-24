@@ -16,19 +16,35 @@ class FirstScreen extends StatelessWidget {
         width: 100000,
         child: new Column(
           children: <Widget>[
-            CupertinoSegmentedControl(
-              children: {
-                1: new Expanded(flex: 1,child: Text("Child 1")),
-                2: new Expanded(flex: 1,child: Text("Child 2")),
-                // 2:Padding(padding: EdgeInsets.all(5.0),child: Text("Child 2"),),
-                // 3:Padding(padding: EdgeInsets.all(5.0),child: Text("Child 3"),),
-                // 4:Padding(padding: EdgeInsets.all(5.0),child: Text("Child 4"),),
-                // 5:Padding(padding: EdgeInsets.all(5.0),child: Text("Child 5"),),
-                // 6:Padding(padding: EdgeInsets.all(5.0),child: Text("Child 6"),),
-                // 7:Padding(padding: EdgeInsets.all(5.0),child: Text("Child 7"),),
-              },
-              onValueChanged: _onValueChanged,
-            ) 
+            new SizedBox(
+              child: new Padding(
+                child: CupertinoSegmentedControl(
+                  children: {
+                  1: new Flex(
+                    children: <Widget>[
+                        new Expanded(flex: 1,child: Text("Child 1", textAlign: TextAlign.center,)),
+                      ],
+                      direction: Axis.horizontal,
+                    ),
+                    2: new Flex(
+                      children: <Widget>[
+                        new Expanded(flex: 1,child: Text("Child 2", textAlign: TextAlign.center,)),
+                      ],
+                      direction: Axis.horizontal,
+                    ),
+                    3: new Flex(
+                      children: <Widget>[
+                        new Expanded(flex: 1,child: Text("Child 3", textAlign: TextAlign.center,)),
+                      ],
+                      direction: Axis.horizontal,
+                    ),
+                  },
+                  onValueChanged: _onValueChanged,
+                ),
+                padding: EdgeInsets.all(10),
+              ),
+              width: 10000,
+            )
           ],
         ),
       ), 
