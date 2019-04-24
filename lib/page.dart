@@ -12,6 +12,10 @@ class FirstScreen extends StatelessWidget {
       appBar: new AppBar(
         title: new Text('First Screen'),
       ),
+      drawer: new Container(
+        width: 300,
+        color: Colors.white,
+      ),
       body: new Container(
         width: 100000,
         child: new Column(
@@ -51,17 +55,6 @@ class FirstScreen extends StatelessWidget {
     );
   }
 }
-
-
-// new RaisedButton(
-//           child: new Text('Launch second screen'),
-//           onPressed:() {
-//             Navigator.push(
-//               context,
-//               new MaterialPageRoute(builder: (context) => new SecondScreen()),
-//             );
-//           },
-//         ),
 
 class SecondScreen  extends StatelessWidget {
   @override
