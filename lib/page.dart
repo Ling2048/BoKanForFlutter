@@ -23,7 +23,16 @@ class FirstScreen extends StatelessWidget {
           new Expanded(
             flex: 1,
             child: new Container(
-              child: new Text('test'),
+              child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(20.0),
+                children: <Widget>[
+                  const Text('I\'m dedicating every day to you'),
+                  const Text('Domestic life was never quite my style'),
+                  const Text('When you smile, you knock me out, I fall apart'),
+                  const Text('And I thought I was so smart'),
+                ],
+              ),
               color: Colors.white,
               width: size.width * 0.5,
               padding: EdgeInsets.fromLTRB(0, statusHeight, 0, 0),
