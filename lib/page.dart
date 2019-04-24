@@ -1,10 +1,65 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'api_helper.dart';
 
 // demo1_navigation.dart
-class FirstScreen extends StatelessWidget {
+class FirstScreen extends StatefulWidget {
+  FirstScreen({Key key}) : super(key: key);
+
+  @override
+  _FirstScreenState createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> { 
   void _onValueChanged (int value) {
     print(value);
+  }
+  var categoryListWidget = <Widget>[];
+  void _getData () {
+    ApiHelper.getCategoryList().then((res){
+      var widgets = res.data.map((v) => 
+        new FlatButton(
+          child: new Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: new Text(v.name, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
+          ),
+          onPressed: () {
+            print(v.id);
+            ApiHelper.getCategoryIssues().then((res){
+              print(res);
+            });
+          },
+        )
+      ).toList();
+      setState(() {
+        categoryListWidget = widgets;
+      });
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    print('initState');
+    _getData();
+  }
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print('didChangeDependencies');
+  }
+  @override
+  void didUpdateWidget(FirstScreen oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    print('didUpdateWidget');
+    
+  }
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    print('deactivate');
   }
   @override
   Widget build(BuildContext context) {
@@ -26,12 +81,7 @@ class FirstScreen extends StatelessWidget {
               child: ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(20.0),
-                children: <Widget>[
-                  const Text('I\'m dedicating every day to you'),
-                  const Text('Domestic life was never quite my style'),
-                  const Text('When you smile, you knock me out, I fall apart'),
-                  const Text('And I thought I was so smart'),
-                ],
+                children: categoryListWidget,
               ),
               color: Colors.white,
               width: size.width * 0.5,
