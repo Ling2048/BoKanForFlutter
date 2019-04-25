@@ -59,11 +59,40 @@ class _FirstScreenState extends State<FirstScreen> {
                           child: ButtonBar(
                             children: <Widget>[
                               FlatButton(
-                                child: const Text('BUY TICKETS'),
-                                onPressed: () { /* ... */ },
+                                child: const Text('List', style: TextStyle(fontSize: 18),),
+                                onPressed: () {
+                                  ApiHelper.getCatalogInfo(id).then((res){
+                                    print(res);
+                                  });
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return new AlertDialog(
+                                          title: new Text(v.resourceName),
+                                          content: new SingleChildScrollView(
+                                              child: new ListBody(
+                                                  children: <Widget>[
+                                                      new Text('内容 1'),
+                                                      new Text('内容 2'),
+                                                  ],
+                                              ),
+                                          ),
+                                          actions: <Widget>[
+                                              new FlatButton(
+                                                  child: new Text('确定'),
+                                                  onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                  },
+                                              ),
+                                          ],
+                                      );
+                                    }
+                                  );
+                                },
                               ),
                               FlatButton(
-                                child: const Text('LISTEN'),
+                                child: const Text('Read', style: TextStyle(fontSize: 18),),
                                 onPressed: () { /* ... */ },
                               ),
                             ],
