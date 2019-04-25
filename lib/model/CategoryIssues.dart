@@ -105,8 +105,8 @@ part 'CategoryIssues.g.dart';
   @JsonKey(name: 'tag')
   String tag;
 
-  @JsonKey(name: 'grade')
-  String grade;
+  // @JsonKey(name: 'grade')
+  // String grade;
 
   @JsonKey(name: 'play')
   int play;
@@ -123,7 +123,7 @@ part 'CategoryIssues.g.dart';
   @JsonKey(name: 'press')
   String press;
 
-  CategoryIssuesData(this.resourceType,this.resourceId,this.resourceName,this.resourceCode,this.issueId,this.issueYear,this.issueNo,this.count,this.start,this.price0,this.price1,this.toll,this.sort,this.title,this.issueName,this.webp,this.html,this.jpg,this.txt,this.pdf,this.show,this.owner,this.categoryName,this.publish,this.listen,this.tag,this.grade,this.play,this.text,this.weight,this.isbn,this.press,);
+  CategoryIssuesData(this.resourceType,this.resourceId,this.resourceName,this.resourceCode,this.issueId,this.issueYear,this.issueNo,this.count,this.start,this.price0,this.price1,this.toll,this.sort,this.title,this.issueName,this.webp,this.html,this.jpg,this.txt,this.pdf,this.show,this.owner,this.categoryName,this.publish,this.listen,this.tag,this.play,this.text,this.weight,this.isbn,this.press,);
 
   factory CategoryIssuesData.fromJson(Map<String, dynamic> srcJson) => _$CategoryIssuesDataFromJson(srcJson);
 

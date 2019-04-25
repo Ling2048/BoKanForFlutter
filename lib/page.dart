@@ -11,10 +11,86 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> { 
-  void _onValueChanged (int value) {
-    print(value);
-  }
+  // void _onValueChanged (int value) {
+  //   print(value);
+  // }
+  ScrollController _scrollController;
+  var pageNum = 1;
   var categoryListWidget = <Widget>[];
+  var categoryIssues = <Widget>[];
+  var currentId;
+  void _getCategoryList (id) {
+      ApiHelper.getCategoryIssues(id, pageNum).then((res) {
+      print(res.data);
+      var categoryIssuesWidget = res.data.map((v) => new Card(
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child:  new Container(
+            height: 150,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Image(
+                  image: NetworkImage('http://msharecej.magook.com/jpage3/'+v.resourceId+'/'+v.resourceId+'-'+v.issueId+'/cover_small.jpg'),
+                  width: 100,
+                  height: 150,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(
+                          v.resourceName, 
+                          style: TextStyle(
+                            fontSize: 25
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        // Expanded(flex: 1, child: Text(v.text, softWrap: true, maxLines: 3,),),
+                        Flexible(
+                          child: Text(v.text, softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis,),
+                        ),
+                        // Text(v.text, softWrap: true, maxLines: 3, overflow: TextOverflow.ellipsis,),
+                        ButtonTheme.bar( // make buttons use the appropriate styles for cards
+                          child: ButtonBar(
+                            children: <Widget>[
+                              FlatButton(
+                                child: const Text('BUY TICKETS'),
+                                onPressed: () { /* ... */ },
+                              ),
+                              FlatButton(
+                                child: const Text('LISTEN'),
+                                onPressed: () { /* ... */ },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ) 
+                ),
+              ],
+            ),
+          ),
+        ),
+      )).toList();
+      pageNum++;
+      setState(() {
+        if (categoryIssues.length > 0) {
+          categoryIssues.addAll(categoryIssuesWidget);
+          var temp = categoryIssues.sublist(0);
+          categoryIssues = temp;
+        }
+        else {
+          categoryIssues = categoryIssuesWidget;
+        }
+      });
+    });
+  }
   void _getData () {
     ApiHelper.getCategoryList().then((res){
       var widgets = res.data.map((v) => 
@@ -25,12 +101,15 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
           onPressed: () {
             print(v.id);
-            ApiHelper.getCategoryIssues().then((res){
-              print(res);
-            });
+            currentId = v.id;
+            pageNum = 1;
+            categoryIssues.removeRange(0, categoryIssues.length);
+            _getCategoryList(v.id);
           },
         )
       ).toList();
+      currentId = res.data[0].id;
+      _getCategoryList(currentId);
       setState(() {
         categoryListWidget = widgets;
       });
@@ -41,25 +120,16 @@ class _FirstScreenState extends State<FirstScreen> {
     super.initState();
     print('initState');
     _getData();
-  }
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    print('didChangeDependencies');
-  }
-  @override
-  void didUpdateWidget(FirstScreen oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
-    print('didUpdateWidget');
-    
-  }
-  @override
-  void deactivate() {
-    // TODO: implement deactivate
-    super.deactivate();
-    print('deactivate');
+    _scrollController = new ScrollController();
+    _scrollController.addListener(() {
+      var current = _scrollController.offset;
+      var end = _scrollController.position.maxScrollExtent;//最大滚动
+      print('scroll');
+      if (current > end - 100) {
+        print('scroll:' + currentId);
+        _getCategoryList(currentId);
+      }
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -88,51 +158,50 @@ class _FirstScreenState extends State<FirstScreen> {
               padding: EdgeInsets.fromLTRB(0, statusHeight, 0, 0),
             ),
           ),
-          // new Expanded(
-          //   flex: 1,
-          //   child: new Container(
-          //     child: new Text('test'),
-          //     color: Colors.white,
-          //   ),
-          // )
         ],
       ),
       body: new Container(
-        width: 100000,
-        child: new Column(
-          children: <Widget>[
-            new SizedBox(
-              child: new Padding(
-                child: CupertinoSegmentedControl(
-                  children: {
-                  1: new Flex(
-                    children: <Widget>[
-                        new Expanded(flex: 1,child: Text("Child 1", textAlign: TextAlign.center,)),
-                      ],
-                      direction: Axis.horizontal,
-                    ),
-                    2: new Flex(
-                      children: <Widget>[
-                        new Expanded(flex: 1,child: Text("Child 2", textAlign: TextAlign.center,)),
-                      ],
-                      direction: Axis.horizontal,
-                    ),
-                    3: new Flex(
-                      children: <Widget>[
-                        new Expanded(flex: 1,child: Text("Child 3", textAlign: TextAlign.center,)),
-                      ],
-                      direction: Axis.horizontal,
-                    ),
-                  },
-                  onValueChanged: _onValueChanged,
-                ),
-                padding: EdgeInsets.all(10),
-              ),
-              width: 10000,
-            )
-          ],
+        child: ListView(
+          children: categoryIssues,
+          controller: _scrollController,
         ),
-      ), 
+      ),
+      // body: new Container(
+      //   width: 100000,
+      //   child: new Column(
+      //     children: <Widget>[
+      //       new SizedBox(
+      //         child: new Padding(
+      //           child: CupertinoSegmentedControl(
+      //             children: {
+      //             1: new Flex(
+      //               children: <Widget>[
+      //                   new Expanded(flex: 1,child: Text("Child 1", textAlign: TextAlign.center,)),
+      //                 ],
+      //                 direction: Axis.horizontal,
+      //               ),
+      //               2: new Flex(
+      //                 children: <Widget>[
+      //                   new Expanded(flex: 1,child: Text("Child 2", textAlign: TextAlign.center,)),
+      //                 ],
+      //                 direction: Axis.horizontal,
+      //               ),
+      //               3: new Flex(
+      //                 children: <Widget>[
+      //                   new Expanded(flex: 1,child: Text("Child 3", textAlign: TextAlign.center,)),
+      //                 ],
+      //                 direction: Axis.horizontal,
+      //               ),
+      //             },
+      //             onValueChanged: _onValueChanged,
+      //           ),
+      //           padding: EdgeInsets.all(10),
+      //         ),
+      //         width: 10000,
+      //       )
+      //     ],
+      //   ),
+      // ), 
     );
   }
 }
