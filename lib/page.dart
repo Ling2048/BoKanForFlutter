@@ -18,10 +18,10 @@ class _FirstScreenState extends State<FirstScreen> {
   var pageNum = 1;
   var categoryListWidget = <Widget>[];
   var categoryIssues = <Widget>[];
+  // var categoryInfoWidget = <ExpansionPanel>[];
   var currentId;
   void _getCategoryList (id) {
       ApiHelper.getCategoryIssues(id, pageNum).then((res) {
-      print(res.data);
       var categoryIssuesWidget = res.data.map((v) => new Card(
         child: Padding(
           padding: EdgeInsets.all(10),
@@ -61,22 +61,48 @@ class _FirstScreenState extends State<FirstScreen> {
                               FlatButton(
                                 child: const Text('List', style: TextStyle(fontSize: 18),),
                                 onPressed: () {
-                                  ApiHelper.getCatalogInfo(id).then((res){
-                                    print(res);
-                                  });
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return new AlertDialog(
+                                  print(v.issueId);
+                                  ApiHelper.getCatalogInfo(v.issueId).then((res){
+                                    print(res.data[0].name);
+                                    var infos = res.data.map((v){
+                                      return ExpansionPanel(
+                                        headerBuilder: (index, opened) {
+                                          return ListTile(
+                                            title: Text(v.name),
+                                          );
+                                        },
+                                        isExpanded: v.sublevels.length > 0 ? true : false,
+                                        // isExpanded: false,
+                                        body: Column(
+                                          children: v.sublevels.map((vv){
+                                            return Padding(
+                                              padding: const EdgeInsets.all(20.0),
+                                              child: Text(vv.name),
+                                            );
+                                          }).toList(),
+                                        ), 
+                                        // ListView(
+                                        //   padding: const EdgeInsets.all(20.0),
+                                        //   children: v.sublevels.map((vv){
+                                        //     return Text(vv.name);
+                                        //   }).toList()
+                                        // ),
+                                      );
+                                    }).toList();
+                                    // setState(() {
+                                    //  categoryInfoWidget = infos; 
+                                    // });
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return new AlertDialog(
                                           title: new Text(v.resourceName),
                                           content: new SingleChildScrollView(
-                                              child: new ListBody(
-                                                  children: <Widget>[
-                                                      new Text('内容 1'),
-                                                      new Text('内容 2'),
-                                                  ],
-                                              ),
+                                            child: ExpansionPanelList(
+                                              expansionCallback: null,
+                                              children: infos,
+                                            ),
                                           ),
                                           actions: <Widget>[
                                               new FlatButton(
@@ -86,9 +112,11 @@ class _FirstScreenState extends State<FirstScreen> {
                                                   },
                                               ),
                                           ],
-                                      );
-                                    }
-                                  );
+                                        );
+                                      }
+                                    );
+                                  });
+                                  
                                 },
                               ),
                               FlatButton(
@@ -129,7 +157,6 @@ class _FirstScreenState extends State<FirstScreen> {
             child: new Text(v.name, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
           ),
           onPressed: () {
-            print(v.id);
             currentId = v.id;
             pageNum = 1;
             categoryIssues.removeRange(0, categoryIssues.length);
@@ -153,9 +180,7 @@ class _FirstScreenState extends State<FirstScreen> {
     _scrollController.addListener(() {
       var current = _scrollController.offset;
       var end = _scrollController.position.maxScrollExtent;//最大滚动
-      print('scroll');
       if (current > end - 100) {
-        print('scroll:' + currentId);
         _getCategoryList(currentId);
       }
     });
