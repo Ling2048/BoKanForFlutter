@@ -18,6 +18,11 @@ class _FirstScreenState extends State<FirstScreen> {
   var pageNum = 1;
   var categoryListWidget = <Widget>[];
   var categoryIssues = <Widget>[];
+  Animation animation;
+  AnimationController animationController;
+  Color iconColors = Colors.grey;
+  Size size;
+  double statusHeight;
   // var categoryInfoWidget = <ExpansionPanel>[];
   var currentId;
   void _getCategoryList (id) {
@@ -65,48 +70,75 @@ class _FirstScreenState extends State<FirstScreen> {
                                   ApiHelper.getCatalogInfo(v.issueId).then((res){
                                     print(res.data[0].name);
                                     var infos = res.data.map((v){
-                                      return ExpansionPanel(
-                                        headerBuilder: (index, opened) {
-                                          return ListTile(
-                                            title: Text(v.name),
-                                          );
-                                        },
-                                        isExpanded: v.sublevels.length > 0 ? true : false,
-                                        // isExpanded: false,
-                                        body: Column(
-                                          children: v.sublevels.map((vv){
-                                            return Padding(
-                                              padding: const EdgeInsets.all(20.0),
-                                              child: Text(vv.name),
-                                            );
-                                          }).toList(),
-                                        ), 
-                                        // ListView(
-                                        //   padding: const EdgeInsets.all(20.0),
-                                        //   children: v.sublevels.map((vv){
-                                        //     return Text(vv.name);
-                                        //   }).toList()
+                                      return ExpansionTile(
+                                        title: Text(v.name),
+                                        initiallyExpanded: v.sublevels.length > 0 ? true : false,
+                                        // trailing: RotationTransition(
+                                        //   turns: new Tween(begin: 0.0, end: 0.125).animate(new AnimationController(vsync: this, duration: Duration(milliseconds: 200))),
+                                        //   child: Icon(
+                                        //     Icons.add,
+                                        //     color: iconColors,
+                                        //   ),
                                         // ),
+                                        // onExpansionChanged: (bool) {
+                                        //   _changeOpacity(bool);
+                                        // },
+                                        children: v.sublevels.map((vv){
+                                          return ListTile(title: Text(vv.name));
+                                        }).toList(),
+                                        // const <Widget>[
+                                        //   ListTile(title: Text('One')),
+                                        //   ListTile(title: Text('Two')),
+                                        //   ListTile(title: Text('Free')),
+                                        //   ListTile(title: Text('Four'))
+                                        // ]
                                       );
+                                      // ExpansionPanel(
+                                      //   headerBuilder: (index, opened) {
+                                      //     return ListTile(
+                                      //       title: Text(v.name),
+                                      //     );
+                                      //   },
+                                      //   isExpanded: v.sublevels.length > 0 ? true : false,
+                                      //   // isExpanded: false,
+                                      //   body: Column(
+                                      //     children: v.sublevels.map((vv){
+                                      //       return Padding(
+                                      //         padding: const EdgeInsets.all(20.0),
+                                      //         child: Text(vv.name),
+                                      //       );
+                                      //     }).toList(),
+                                      // ), 
+                                      // // ListView(
+                                      // //   padding: const EdgeInsets.all(20.0),
+                                      // //   children: v.sublevels.map((vv){
+                                      // //     return Text(vv.name);
+                                      // //   }).toList()
+                                      // // ),
+                                      // );
                                     }).toList();
-                                    // setState(() {
-                                    //  categoryInfoWidget = infos; 
-                                    // });
+
                                     showDialog(
                                       context: context,
-                                      barrierDismissible: false,
+                                      barrierDismissible: true,
                                       builder: (context) {
                                         return new AlertDialog(
                                           title: new Text(v.resourceName),
-                                          content: new SingleChildScrollView(
-                                            child: ExpansionPanelList(
-                                              expansionCallback: null,
-                                              children: infos,
+                                          content: new Container(
+                                            width: size.width * 0.8,
+                                            child: new SingleChildScrollView(
+                                              child: Column(
+                                                children: infos,
+                                              )
+                                              // ExpansionPanelList(
+                                              //   expansionCallback: null,
+                                              //   children: infos,
+                                              // ),
                                             ),
                                           ),
                                           actions: <Widget>[
                                               new FlatButton(
-                                                  child: new Text('确定'),
+                                                  child: new Text('Close'),
                                                   onPressed: () {
                                                       Navigator.of(context).pop();
                                                   },
@@ -187,11 +219,11 @@ class _FirstScreenState extends State<FirstScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;//获取屏幕尺寸
-    var statusHeight = MediaQuery.of(context).padding.top;//获取状态栏高度
+    size = MediaQuery.of(context).size;//获取屏幕尺寸
+    statusHeight = MediaQuery.of(context).padding.top;//获取状态栏高度
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('First Screen'),
+        title: new Text('期刊'),
       ),
       drawer: new Flex(
         direction: Axis.vertical,
