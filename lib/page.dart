@@ -1,3 +1,4 @@
+import 'package:bokan/model/CategoryIssues.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'api_helper.dart';
@@ -25,8 +26,8 @@ class _FirstScreenState extends State<FirstScreen> {
   double statusHeight;
   // var categoryInfoWidget = <ExpansionPanel>[];
   var currentId;
-  void _read () {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) => new SecondScreen()),);
+  void _read (CategoryIssuesData data) {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new SecondScreen(data)),);
   }
   void _getCategoryList (id) {
       ApiHelper.getCategoryIssues(id, pageNum).then((res) {
@@ -163,7 +164,7 @@ class _FirstScreenState extends State<FirstScreen> {
                               FlatButton(
                                 child: const Text('Read', style: TextStyle(fontSize: 18),),
                                 onPressed: () { 
-                                  _read();
+                                  _read(v);
                                  },
                               ),
                             ],
@@ -304,11 +305,13 @@ class _FirstScreenState extends State<FirstScreen> {
 }
 
 class SecondScreen  extends StatelessWidget {
+  final CategoryIssuesData data;
+  SecondScreen(this.data);
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('Second Screen'),
+        title: new Text(data.resourceName),
       ),
       body: new Center(
         child: new RaisedButton(
