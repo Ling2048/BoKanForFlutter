@@ -25,6 +25,9 @@ class _FirstScreenState extends State<FirstScreen> {
   double statusHeight;
   // var categoryInfoWidget = <ExpansionPanel>[];
   var currentId;
+  void _read () {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new SecondScreen()),);
+  }
   void _getCategoryList (id) {
       ApiHelper.getCategoryIssues(id, pageNum).then((res) {
       var categoryIssuesWidget = res.data.map((v) => new Card(
@@ -138,6 +141,12 @@ class _FirstScreenState extends State<FirstScreen> {
                                           ),
                                           actions: <Widget>[
                                               new FlatButton(
+                                                  child: new Text('Read'),
+                                                  onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                  },
+                                              ),
+                                              new FlatButton(
                                                   child: new Text('Close'),
                                                   onPressed: () {
                                                       Navigator.of(context).pop();
@@ -153,7 +162,9 @@ class _FirstScreenState extends State<FirstScreen> {
                               ),
                               FlatButton(
                                 child: const Text('Read', style: TextStyle(fontSize: 18),),
-                                onPressed: () { /* ... */ },
+                                onPressed: () { 
+                                  _read();
+                                 },
                               ),
                             ],
                           ),
