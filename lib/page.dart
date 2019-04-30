@@ -16,9 +16,18 @@ class _FirstScreenState extends State<FirstScreen> {
   //   print(value);
   // }
   ScrollController _scrollController;
+  var loading = Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      child: new CircularProgressIndicator(),
+                    )
+                  ],
+                );
   var pageNum = 1;
   var categoryListWidget = <Widget>[];
   var categoryIssues = <Widget>[];
+  var infos;
   Animation animation;
   AnimationController animationController;
   Color iconColors = Colors.grey;
@@ -71,93 +80,132 @@ class _FirstScreenState extends State<FirstScreen> {
                                 child: const Text('List', style: TextStyle(fontSize: 18),),
                                 onPressed: () {
                                   print(v.issueId);
-                                  ApiHelper.getCatalogInfo(v.issueId).then((res){
-                                    print(res.data[0].name);
-                                    var infos = res.data.map((v){
-                                      return ExpansionTile(
-                                        title: Text(v.name),
-                                        initiallyExpanded: v.sublevels.length > 0 ? true : false,
-                                        // trailing: RotationTransition(
-                                        //   turns: new Tween(begin: 0.0, end: 0.125).animate(new AnimationController(vsync: this, duration: Duration(milliseconds: 200))),
-                                        //   child: Icon(
-                                        //     Icons.add,
-                                        //     color: iconColors,
-                                        //   ),
-                                        // ),
-                                        // onExpansionChanged: (bool) {
-                                        //   _changeOpacity(bool);
-                                        // },
-                                        children: v.sublevels.map((vv){
-                                          return ListTile(title: Text(vv.name));
-                                        }).toList(),
-                                        // const <Widget>[
-                                        //   ListTile(title: Text('One')),
-                                        //   ListTile(title: Text('Two')),
-                                        //   ListTile(title: Text('Free')),
-                                        //   ListTile(title: Text('Four'))
-                                        // ]
-                                      );
-                                      // ExpansionPanel(
-                                      //   headerBuilder: (index, opened) {
-                                      //     return ListTile(
-                                      //       title: Text(v.name),
-                                      //     );
-                                      //   },
-                                      //   isExpanded: v.sublevels.length > 0 ? true : false,
-                                      //   // isExpanded: false,
-                                      //   body: Column(
-                                      //     children: v.sublevels.map((vv){
-                                      //       return Padding(
-                                      //         padding: const EdgeInsets.all(20.0),
-                                      //         child: Text(vv.name),
-                                      //       );
-                                      //     }).toList(),
-                                      // ), 
-                                      // // ListView(
-                                      // //   padding: const EdgeInsets.all(20.0),
-                                      // //   children: v.sublevels.map((vv){
-                                      // //     return Text(vv.name);
-                                      // //   }).toList()
-                                      // // ),
-                                      // );
-                                    }).toList();
+                                  // var infos;
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) {
+                                      print('done');
+                                      ApiHelper.getCatalogInfo(v.issueId).then((res){
+                                            print(res.data[0].name);
+                                            var temp = res.data.map((v){
+                                              return ExpansionTile(
+                                                title: Text(v.name),
+                                                initiallyExpanded: v.sublevels.length > 0 ? true : false,
+                                                children: v.sublevels.map((vv){
+                                                  return ListTile(title: Text(vv.name));
+                                                }).toList(),
+                                              );
+                                            }).toList();
+                                            setState(() {
+                                              infos = temp;
+                                            });
+                                          });
+                                      return StatefulBuilder(
+                                        builder: (context, state ) {
+                                          
 
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder: (context) {
-                                        return new AlertDialog(
-                                          title: new Text(v.resourceName),
-                                          content: new Container(
-                                            width: size.width * 0.8,
-                                            child: new SingleChildScrollView(
-                                              child: Column(
-                                                children: infos,
-                                              )
-                                              // ExpansionPanelList(
-                                              //   expansionCallback: null,
-                                              //   children: infos,
-                                              // ),
+                                          return new AlertDialog(
+                                            title: new Text(v.resourceName),
+                                            content: new Container(
+                                              width: size.width * 0.8,
+                                              child: infos != null ? new SingleChildScrollView(
+                                                child: Column(
+                                                  children: infos,
+                                                )
+                                                // ExpansionPanelList(
+                                                //   expansionCallback: null,
+                                                //   children: infos,
+                                                // ),
+                                              ) : loading,
+                                              // child: Row(
+                                              //   mainAxisAlignment: MainAxisAlignment.center,
+                                              //   children: <Widget>[
+                                              //     SizedBox(
+                                              //       child: new CircularProgressIndicator(),
+                                              //     )
+                                              //   ],
+                                              // )
                                             ),
-                                          ),
-                                          actions: <Widget>[
-                                              new FlatButton(
-                                                  child: new Text('Read'),
-                                                  onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                  },
-                                              ),
-                                              new FlatButton(
-                                                  child: new Text('Close'),
-                                                  onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                  },
-                                              ),
-                                          ],
-                                        );
-                                      }
+                                            actions: <Widget>[
+                                                new FlatButton(
+                                                    child: new Text('Read'),
+                                                    onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                    },
+                                                ),
+                                                new FlatButton(
+                                                    child: new Text('Close'),
+                                                    onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                    },
+                                                ),
+                                            ],
+                                          );
+                                        },
                                     );
-                                  });
+                                      
+                                    }
+                                  );
+
+                                  // ApiHelper.getCatalogInfo(v.issueId).then((res){
+                                  //   print(res.data[0].name);
+                                  //   var temp = res.data.map((v){
+                                  //     return ExpansionTile(
+                                  //       title: Text(v.name),
+                                  //       initiallyExpanded: v.sublevels.length > 0 ? true : false,
+                                  //       children: v.sublevels.map((vv){
+                                  //         return ListTile(title: Text(vv.name));
+                                  //       }).toList(),
+                                  //     );
+                                  //   }).toList();
+                                  //   setState(() {
+                                  //     infos = temp;
+                                  //   });
+                                  //   // showDialog(
+                                  //   //   context: context,
+                                  //   //   barrierDismissible: true,
+                                  //   //   builder: (context) {
+                                  //   //     return new AlertDialog(
+                                  //   //       title: new Text(v.resourceName),
+                                  //   //       content: new Container(
+                                  //   //         width: size.width * 0.8,
+                                  //   //         child: infos.length > 0 ? new SingleChildScrollView(
+                                  //   //           child: Column(
+                                  //   //             children: infos,
+                                  //   //           )
+                                  //   //           // ExpansionPanelList(
+                                  //   //           //   expansionCallback: null,
+                                  //   //           //   children: infos,
+                                  //   //           // ),
+                                  //   //         ) : loading,
+                                  //   //         // child: Row(
+                                  //   //         //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   //         //   children: <Widget>[
+                                  //   //         //     SizedBox(
+                                  //   //         //       child: new CircularProgressIndicator(),
+                                  //   //         //     )
+                                  //   //         //   ],
+                                  //   //         // )
+                                  //   //       ),
+                                  //   //       actions: <Widget>[
+                                  //   //           new FlatButton(
+                                  //   //               child: new Text('Read'),
+                                  //   //               onPressed: () {
+                                  //   //                   Navigator.of(context).pop();
+                                  //   //               },
+                                  //   //           ),
+                                  //   //           new FlatButton(
+                                  //   //               child: new Text('Close'),
+                                  //   //               onPressed: () {
+                                  //   //                   Navigator.of(context).pop();
+                                  //   //               },
+                                  //   //           ),
+                                  //   //       ],
+                                  //   //     );
+                                  //   //   }
+                                  //   // );
+                                  // });
                                   
                                 },
                               ),
