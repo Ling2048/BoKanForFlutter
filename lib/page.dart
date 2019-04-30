@@ -80,31 +80,31 @@ class _FirstScreenState extends State<FirstScreen> {
                                 child: const Text('List', style: TextStyle(fontSize: 18),),
                                 onPressed: () {
                                   print(v.issueId);
+                                  var dialogState;
                                   // var infos;
                                   showDialog(
                                     context: context,
                                     barrierDismissible: true,
                                     builder: (context) {
                                       print('done');
-                                      ApiHelper.getCatalogInfo(v.issueId).then((res){
-                                            print(res.data[0].name);
-                                            var temp = res.data.map((v){
-                                              return ExpansionTile(
-                                                title: Text(v.name),
-                                                initiallyExpanded: v.sublevels.length > 0 ? true : false,
-                                                children: v.sublevels.map((vv){
-                                                  return ListTile(title: Text(vv.name));
-                                                }).toList(),
-                                              );
-                                            }).toList();
-                                            setState(() {
-                                              infos = temp;
-                                            });
-                                          });
                                       return StatefulBuilder(
                                         builder: (context, state ) {
-                                          
-
+                                          // ApiHelper.getCatalogInfo(v.issueId).then((res){
+                                          //   print(res.data[0].name);
+                                          //   var temp = res.data.map((v){
+                                          //     return ExpansionTile(
+                                          //       title: Text(v.name),
+                                          //       initiallyExpanded: v.sublevels.length > 0 ? true : false,
+                                          //       children: v.sublevels.map((vv){
+                                          //         return ListTile(title: Text(vv.name));
+                                          //       }).toList(),
+                                          //     );
+                                          //   }).toList();
+                                          //   setState(() {
+                                          //     infos = temp;
+                                          //   });
+                                          // });
+                                          dialogState = state;
                                           return new AlertDialog(
                                             title: new Text(v.resourceName),
                                             content: new Container(
@@ -148,65 +148,22 @@ class _FirstScreenState extends State<FirstScreen> {
                                     }
                                   );
 
-                                  // ApiHelper.getCatalogInfo(v.issueId).then((res){
-                                  //   print(res.data[0].name);
-                                  //   var temp = res.data.map((v){
-                                  //     return ExpansionTile(
-                                  //       title: Text(v.name),
-                                  //       initiallyExpanded: v.sublevels.length > 0 ? true : false,
-                                  //       children: v.sublevels.map((vv){
-                                  //         return ListTile(title: Text(vv.name));
-                                  //       }).toList(),
-                                  //     );
-                                  //   }).toList();
-                                  //   setState(() {
-                                  //     infos = temp;
-                                  //   });
-                                  //   // showDialog(
-                                  //   //   context: context,
-                                  //   //   barrierDismissible: true,
-                                  //   //   builder: (context) {
-                                  //   //     return new AlertDialog(
-                                  //   //       title: new Text(v.resourceName),
-                                  //   //       content: new Container(
-                                  //   //         width: size.width * 0.8,
-                                  //   //         child: infos.length > 0 ? new SingleChildScrollView(
-                                  //   //           child: Column(
-                                  //   //             children: infos,
-                                  //   //           )
-                                  //   //           // ExpansionPanelList(
-                                  //   //           //   expansionCallback: null,
-                                  //   //           //   children: infos,
-                                  //   //           // ),
-                                  //   //         ) : loading,
-                                  //   //         // child: Row(
-                                  //   //         //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   //         //   children: <Widget>[
-                                  //   //         //     SizedBox(
-                                  //   //         //       child: new CircularProgressIndicator(),
-                                  //   //         //     )
-                                  //   //         //   ],
-                                  //   //         // )
-                                  //   //       ),
-                                  //   //       actions: <Widget>[
-                                  //   //           new FlatButton(
-                                  //   //               child: new Text('Read'),
-                                  //   //               onPressed: () {
-                                  //   //                   Navigator.of(context).pop();
-                                  //   //               },
-                                  //   //           ),
-                                  //   //           new FlatButton(
-                                  //   //               child: new Text('Close'),
-                                  //   //               onPressed: () {
-                                  //   //                   Navigator.of(context).pop();
-                                  //   //               },
-                                  //   //           ),
-                                  //   //       ],
-                                  //   //     );
-                                  //   //   }
-                                  //   // );
-                                  // });
-                                  
+                                  ApiHelper.getCatalogInfo(v.issueId).then((res){
+                                    print(res.data[0].name);
+                                    var temp = res.data.map((v){
+                                      return ExpansionTile(
+                                        title: Text(v.name),
+                                        initiallyExpanded: v.sublevels.length > 0 ? true : false,
+                                        children: v.sublevels.map((vv){
+                                          return ListTile(title: Text(vv.name));
+                                        }).toList(),
+                                      );
+                                    }).toList();
+                                    dialogState(() {
+                                      infos = temp;
+                                    });
+                                  });
+
                                 },
                               ),
                               FlatButton(
