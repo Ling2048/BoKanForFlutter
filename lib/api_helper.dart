@@ -1,3 +1,4 @@
+import 'package:bokan/model/CatalogHash.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './model/CategoryList.dart';
@@ -31,6 +32,15 @@ class ApiHelper {
     // print(response.body);
     Map<String, dynamic> body = json.decode(response.body);
     var result = new CatalogInfo.fromJson(body);
+    return result;
+  }
+
+  static Future<CatalogHash>  getHash (String resourceId, String issueId, String start, String end) async {
+    var url = urlBase + '?op=Resource.getHash&resourceType=1&resourceId=$resourceId&issueId=$issueId&start=$start&end=$end';
+    var response = await http.get(url);
+    // print(response.body);
+    Map<String, dynamic> body = json.decode(response.body);
+    var result = new CatalogHash.fromJson(body);
     return result;
   }
 }

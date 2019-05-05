@@ -89,6 +89,7 @@ class _FirstScreenState extends State<FirstScreen> {
                                       print('done');
                                       return StatefulBuilder(
                                         builder: (context, state ) {
+                                          print('done2');
                                           // ApiHelper.getCatalogInfo(v.issueId).then((res){
                                           //   print(res.data[0].name);
                                           //   var temp = res.data.map((v){
@@ -309,9 +310,16 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 }
 
-class SecondScreen  extends StatelessWidget {
+class SecondScreen  extends StatefulWidget {
   final CategoryIssuesData data;
   SecondScreen(this.data);
+  @override
+  _SecondScreenState createState() => _SecondScreenState(data);
+}
+
+class _SecondScreenState extends State<SecondScreen> { 
+  final CategoryIssuesData data;
+  _SecondScreenState(this.data);
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -319,12 +327,27 @@ class SecondScreen  extends StatelessWidget {
         title: new Text(data.resourceName),
       ),
       body: new Center(
-        child: new RaisedButton(
-          child: new Text('Go back!'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        child: new Column(
+          children: <Widget>[
+            new RaisedButton(
+              child: new Text('Go back!'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            new RaisedButton(
+              child: new Text('GetHash'),
+              onPressed: () {
+                ApiHelper.getHash(data.resourceId, data.issueId, '1', data.count).then((res) {
+                  print(res.data[0].hash);
+                  res.data.map((v){
+                    print(v.hash);
+                  });
+                });
+              },
+            ),
+          ],
+        ), 
       ),
     );
   }
