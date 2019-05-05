@@ -319,6 +319,7 @@ class SecondScreen  extends StatefulWidget {
 
 class _SecondScreenState extends State<SecondScreen> { 
   final CategoryIssuesData data;
+  List<Image> images = new List<Image>();
   _SecondScreenState(this.data);
   @override
   Widget build(BuildContext context) {
@@ -339,12 +340,24 @@ class _SecondScreenState extends State<SecondScreen> {
               child: new Text('GetHash'),
               onPressed: () {
                 ApiHelper.getHash(data.resourceId, data.issueId, '1', data.count).then((res) {
-                  print(res.data[0].hash);
-                  res.data.map((v){
-                    print(v.hash);
+                  var imgs = res.data.map((v) {
+                    var url = 'http://msharecej.magook.com/page3/' + data.resourceId + '/' 
+                    + data.resourceId + '-' + data.issueId + '/' + v.hash + '_big.mg';
+                    return new Image(
+                      image: NetworkImage(url),
+                      width: 100,
+                      height: 150,
+                    );
+                  }).toList();
+                  print(imgs[0]);
+                  setState(() {
+                   images =  imgs;
                   });
                 });
               },
+            ),
+            ListView(
+              children: images,
             ),
           ],
         ), 
